@@ -37,8 +37,24 @@ minvTest = testGroup "minv"
          , 0.25, 0.5, 0.75 ] @~=? toList (run $ minv $ use a)
    ]
 
+mmulTest :: Test
+mmulTest = testGroup "mmul" $
+  [ testCase "Known matrixes" $
+      let a = fromList (Z:.3:.4) [ 1, 2, 3, 4
+                                 , 5, 6, 7, 8
+                                 , 9, 0, 1, 2 ] :: Array DIM2 Int
+          b = fromList (Z:.4:.2) [ 1, 2
+                                 , 3, 4
+                                 , 5, 6
+                                 , 7, 8 ] :: Array DIM2 Int
+      in [  50,  60
+         , 114, 140
+         , 28,   40 ] @=? toList (run $ mmul (use a) (use b))
+  ]
+
 main :: IO ()
 main = defaultMain
   [ gaussianEliminationTest
   , minvTest
+  , mmulTest
   ]
