@@ -8,7 +8,7 @@ license-file:        LICENSE
 author:              Stanislav Chernichkin
 maintainer:          schernichkin@gmail.com
 copyright:           Copyright (C) 2016 Stanislav Chernichkin
-category:            Numeric, Math, Linear Algebra
+category:            Linear Algebra
 build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
@@ -16,6 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Data.Array.Accelerate.GaussianElimination
+                     , Data.Array.Accelerate.Matrix
   build-depends:       base >= 4.7 && < 5
                      , accelerate
   ghc-options:         -Wall
@@ -28,6 +29,7 @@ test-suite accelerate-numeric-test
   build-depends:       base
                      , accelerate
                      , accelerate-numeric
+                     , ieee754
                      , HUnit
                      , test-framework
                      , test-framework-hunit

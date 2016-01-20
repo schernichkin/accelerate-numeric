@@ -11,11 +11,11 @@ import Data.Array.Accelerate
 import Prelude hiding ( (<*), drop, map, snd, tail, zip )
 
 -- | Add index to each array element
-indexed :: (Shape sh, Elt e) => Acc (Array sh e) -> Acc (Array sh (sh,e))
+indexed :: ( Shape sh, Elt e ) => Acc (Array sh e) -> Acc (Array sh (sh,e))
 indexed xs = zip (generate (shape xs) id) xs
 
 -- | Return maximum element with it index.
-imaxBy :: forall ix a b . ( Shape ix, Elt a, Elt b, IsScalar b )
+imaxBy :: ( Shape ix, Elt a, Elt b, IsScalar b )
        => (Exp a -> Exp b) -> Acc (Array ix a) -> Acc (Scalar (ix, a))
 imaxBy f = fold1All g . indexed
   where
@@ -23,7 +23,7 @@ imaxBy f = fold1All g . indexed
 
 -- | Perform elimination step.
 -- First column should contain at least one non-zero element
-eliminationStep :: forall e . ( Elt e, IsFloating e )
+eliminationStep :: ( Elt e, IsFloating e )
                 => Exp Int
                 -> Acc (Array DIM2 e)
                 -> Acc (Array DIM2 e)
@@ -41,7 +41,7 @@ eliminationStep i a = generate (lift $ Z :. m :. (n - 1)) f
             in a ! index2 y (x + 1) - a ! index2 y 0 * pivotRow ! index1 x
           )
 
-eliminate :: forall e . ( Elt e, IsFloating e )
+eliminate :: ( Elt e, IsFloating e )
           => Acc (Array DIM2 e)
           -> Acc (Array DIM2 e)
 eliminate arr = asnd $ awhile (unit . (<* y) . the . afst) step $ lift (unit 0, arr)
