@@ -1,6 +1,5 @@
 import           Data.AEq
 import           Data.Array.Accelerate hiding ((++))
-import           Data.Array.Accelerate.GaussianElimination
 import           Data.Array.Accelerate.Interpreter
 import           Data.Array.Accelerate.Matrix
 import           Control.Monad

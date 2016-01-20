@@ -15,8 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Data.Array.Accelerate.GaussianElimination
-                     , Data.Array.Accelerate.Matrix
+  exposed-modules:     Data.Array.Accelerate.Matrix
   build-depends:       base >= 4.7 && < 5
                      , accelerate
   ghc-options:         -Wall
