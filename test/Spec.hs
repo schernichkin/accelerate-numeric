@@ -12,10 +12,9 @@ gaussianEliminationTest = testGroup "Gaussian elimination"
                                     , 1,  1, -1, 1
                                     , 3, 11,  5, 35
                                     ] :: Array DIM2 Float
-          (i, arr) = run $ eliminate (use arr0)
-      in ( [3], [ 1, 0, -2, -3,
-                  0, 1,  1,  4,
-                  0, 0,  0,  0] ) @=? (toList i, toList arr)
+          arr = run $ eliminate (use arr0)
+      in [ -3, 4, 0] @=? toList arr
+
   ]
 
 main :: IO ()
