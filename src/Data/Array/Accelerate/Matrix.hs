@@ -4,14 +4,27 @@
 
 module Data.Array.Accelerate.Matrix
   ( eliminate
+  , madd
+  , mid
   , minv
   , mmul
+  , mscale
   , pinvc
   , pinvr
   ) where
 
 import Data.Array.Accelerate
 import Prelude hiding ( (<*), drop, map, replicate, snd, tail, zip, zipWith )
+
+-- | Identity matrix
+mid :: ( Elt e, IsNum e )
+    => Exp Int
+    -> Acc (Array DIM2 e)
+mid n = generate (lift $ Z:.n:.n) f
+  where
+    f ix =
+      let Z :. (y :: Exp Int) :. (x :: Exp Int) = unlift ix
+      in y ==* x ? (1, 0)
 
 -- | Calculate matrix inverse O(n^3)
 minv :: ( Elt e, IsFloating e )
@@ -27,13 +40,20 @@ minv a = eliminate $ generate (lift $ Z :. m :. n + m) f
 -- that the columns are linearly independent O(n^3)
 pinvc :: ( Elt e, IsFloating e )
       => Acc (Array DIM2 e) -> Acc (Array DIM2 e)
-pinvc a = let at = transpose a in mmul (minv $ mmul at a) at
+pinvc a = mmult (minv $ mmul (transpose a) a) a
 
 -- | Calculate Moore–Penrose pseudoinverse assuming
 -- that the rows are linearly independent O(n^3)
 pinvr :: ( Elt e, IsFloating e )
       => Acc (Array DIM2 e) -> Acc (Array DIM2 e)
-pinvr a = let at = transpose a in mmul at (minv $ mmul a at)
+pinvr a = mmul (transpose a) (minv $ mmult a a)
+
+-- | Sum of two matrices O(n^2)
+madd :: ( Elt e, IsNum e )
+     => Acc (Array DIM2 e)
+     -> Acc (Array DIM2 e)
+     -> Acc (Array DIM2 e)
+madd = zipWith (+)
 
 -- | Matrix multiplication O(n^3)
 mmul :: ( Elt e, IsNum e )
@@ -53,6 +73,13 @@ mmult a b = fold1 (+) $ zipWith (*) ar br
     Z :. (mb :: Exp Int) :. (_ :: Exp Int) = unlift $ shape b
     ar = replicate (lift $ Z :. All :. mb  :. All) a
     br = replicate (lift $ Z :. ma  :. All :. All) b
+
+-- | Multiply matrix by scalar O(n^2)
+mscale :: ( Elt e, IsNum e )
+       => Acc (Scalar e)
+       -> Acc (Array DIM2 e)
+       -> Acc (Array DIM2 e)
+mscale = map . (*) . the
 
 -- | Add index to each array element
 indexed :: ( Shape sh, Elt e ) => Acc (Array sh e) -> Acc (Array sh (sh,e))
@@ -85,7 +112,8 @@ eliminationStep i a = generate (lift $ Z :. m :. (n - 1)) f
             in a ! index2 y (x + 1) - a ! index2 y 0 * pivotRow ! index1 x
           )
 
--- | Gaussian elimination with partial pivoting for nonsingular matrix O(n^3)
+-- | Gaussian elimination with partial pivoting assuming
+-- that the rows are linearly independent O(n^3)
 eliminate :: ( Elt e, IsFloating e )
           => Acc (Array DIM2 e)
           -> Acc (Array DIM2 e)
