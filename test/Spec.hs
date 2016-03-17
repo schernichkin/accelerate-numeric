@@ -1,7 +1,7 @@
 import           Data.AEq
 import           Data.Array.Accelerate hiding ((++))
 import           Data.Array.Accelerate.Interpreter
-import           Data.Array.Accelerate.Matrix
+import           Data.Array.Accelerate.Algo.LA
 import           Control.Monad
 import           Test.Framework
 import           Test.Framework.Providers.HUnit

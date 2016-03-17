@@ -2,8 +2,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators       #-}
 
-module Data.Array.Accelerate.Matrix
+-- | Linear algebra algorithms
+module Data.Array.Accelerate.Algo.LA
   ( eliminate
+  , dotProduct
   , madd
   , mid
   , minv
@@ -15,6 +17,12 @@ module Data.Array.Accelerate.Matrix
 
 import Data.Array.Accelerate
 import Prelude hiding ( (<*), drop, map, replicate, snd, tail, zip, zipWith )
+
+dotProduct :: ( Elt e, IsNum e )
+           => Acc (Vector e)
+           -> Acc (Vector e)
+           -> Acc (Scalar e)
+dotProduct x y = fold (+) 0 $ zipWith (*) x y
 
 -- | Identity matrix
 mid :: ( Elt e, IsNum e )

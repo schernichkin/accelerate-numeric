@@ -15,7 +15,10 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Data.Array.Accelerate.Matrix
+  exposed-modules:     Data.Array.Accelerate.Algo.Check
+                     , Data.Array.Accelerate.Algo.Fin
+                     , Data.Array.Accelerate.Algo.LA
+                     , Data.Array.Accelerate.Algo.String
   build-depends:       base >= 4.7 && < 5
                      , accelerate
   ghc-options:         -Wall
